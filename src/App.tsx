@@ -1,26 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useSyncExternalStore } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const getSnapshotInnerHeight = () => window.innerHeight;
+
+const getSnapshotInnerWidth = () => window.innerWidth;
+
+const subscribe = (cb: () => void) => {
+  window.addEventListener('resize', cb);
+  return () => window.removeEventListener('resize', cb);
 }
 
-export default App;
+export const App = () => {
+  const innerHeight = useSyncExternalStore(subscribe, getSnapshotInnerHeight)
+  const innerWidth = useSyncExternalStore(subscribe, getSnapshotInnerWidth)
+
+  return <div>InnerWidth: {innerWidth}, InnerHeight: {innerHeight}</div>
+}
